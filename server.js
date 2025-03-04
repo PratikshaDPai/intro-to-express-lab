@@ -1,4 +1,5 @@
 const express = require("express");
+const validator = require("validator");
 const app = express();
 
 app.get("/", (req, res) => {
@@ -18,6 +19,18 @@ app.get("/greetings/:username", (req, res) => {
     greetings[Math.floor(Math.random() * greetings.length)];
 
   res.send(responseMessage);
+});
+
+// Define the route with a dynamic parameter ":number"
+app.get("/roll/:num", (req, res) => {
+  const num = String(req.params.num);
+  if (!validator.isInt(num, { min: 1 })) {
+    res.send("You must specify a number");
+  }
+  const dieNum = parseInt(num, 10);
+  const responseMessage = Math.floor(Math.random() * dieNum) + 1;
+
+  res.send(responseMessage.toString()); //was facing an error since number was being interpreted as status code
 });
 
 // Start the server on port 3000
